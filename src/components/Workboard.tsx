@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import React from "react";
 
 const Wrapper = styled.div`
   margin: 20px;
@@ -11,6 +12,7 @@ const Wrapper = styled.div`
 `;
 
 const StyledWorkboard = styled.div`
+  position: relative;
   height: 3000px;
   width: 3000px;
 
@@ -19,34 +21,27 @@ const StyledWorkboard = styled.div`
     linear-gradient(to bottom, lightgrey 1px, transparent 1px);
 `;
 
-function Workboard() {
+interface Props {
+  onClick: (e: React.MouseEvent<HTMLElement>) => void;
+  nodes: number[][];
+}
+
+function Workboard(props: Props) {
   return (
     <Wrapper>
-      <StyledWorkboard>
-        <svg height="100" width="100">
-          <circle
-            cx="50"
-            cy="50"
-            r="40"
-            stroke="black"
-            stroke-width="3"
-            fill="red"
-          />
-        </svg>
-        <svg height="210" width="500">
-          <line
-            x1="0"
-            y1="0"
-            x2="200"
-            y2="200"
-            stroke="black"
-            stroke-width="2"
-          />
-        </svg>
-        <svg height="30" width="200">
-          <text x="0" y="15" fill="blue">
-            I love SVG!
-          </text>
+      <StyledWorkboard onClick={props.onClick}>
+        <svg height="3000" width="3000">
+          {props.nodes.map((node) => (
+            <circle
+              key={node[2]}
+              cx={node[0]}
+              cy={node[1]}
+              r="40"
+              stroke="black"
+              strokeWidth="3"
+              fill="red"
+            />
+          ))}
         </svg>
       </StyledWorkboard>
     </Wrapper>
