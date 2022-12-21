@@ -19,10 +19,20 @@ const Board = styled.div`
     linear-gradient(to bottom, lightgrey 1px, transparent 1px);
 `;
 
+interface Node {
+  xPos: number;
+  yPos: number;
+}
+
+interface Edge {
+  fromIndex: number;
+  toIndex: number;
+}
+
 interface Props {
   onClick: (x: number, y: number) => void;
-  nodes: number[][];
-  edges: number[][];
+  nodes: Node[];
+  edges: Edge[];
   nodeRadius: number;
   nodeFill: string;
   nodeStroke: string;
@@ -62,22 +72,22 @@ function Workboard({
     <Wrapper ref={wrapperRef}>
       <Board ref={boardRef} onClick={onBoardClick}>
         <svg height={boardHeight} width={boardWidth}>
-          {edges.map(([from, to, key]) => (
+          {edges.map((edge, index) => (
             <line
-              key={key}
-              x1={nodes[from][0]}
-              y1={nodes[from][1]}
-              x2={nodes[to][0]}
-              y2={nodes[to][1]}
+              key={index}
+              x1={nodes[edge.fromIndex].xPos}
+              y1={nodes[edge.fromIndex].yPos}
+              x2={nodes[edge.toIndex].xPos}
+              y2={nodes[edge.toIndex].yPos}
               stroke="red"
               strokeWidth={3}
             />
           ))}
-          {nodes.map((node) => (
+          {nodes.map((node, index) => (
             <circle
-              key={node[2]}
-              cx={node[0]}
-              cy={node[1]}
+              key={index}
+              cx={node.xPos}
+              cy={node.yPos}
               r={nodeRadius}
               stroke={nodeStroke}
               strokeWidth={nodeStrokeWidth}
@@ -90,4 +100,5 @@ function Workboard({
   );
 }
 
-export default Workboard;
+export { Workboard };
+export type { Node, Edge };
