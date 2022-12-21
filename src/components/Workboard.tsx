@@ -22,6 +22,7 @@ const Board = styled.div`
 interface Node {
   xPos: number;
   yPos: number;
+  radius: number;
 }
 
 interface Edge {
@@ -33,7 +34,6 @@ interface Props {
   onClick: (x: number, y: number) => void;
   nodes: Node[];
   edges: Edge[];
-  nodeRadius: number;
   nodeFill: string;
   nodeStroke: string;
   nodeStrokeWidth: number;
@@ -45,7 +45,6 @@ interface Props {
 
 function Workboard({
   onClick,
-  nodeRadius,
   nodes,
   nodeFill,
   nodeStroke,
@@ -92,7 +91,7 @@ function Workboard({
               key={index}
               cx={node.xPos}
               cy={node.yPos}
-              r={nodeRadius}
+              r={node.radius}
               stroke={nodeStroke}
               strokeWidth={nodeStrokeWidth}
               fill={nodeFill}
