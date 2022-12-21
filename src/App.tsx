@@ -76,7 +76,10 @@ function App() {
           }
           setGraph((prev) => ({
             ...prev,
-            nodes: [...prev.nodes, { xPos: x, yPos: y, radius: NODE_RADIUS }],
+            nodes: [
+              ...prev.nodes,
+              { xPos: x, yPos: y, radius: NODE_RADIUS, deleted: false },
+            ],
           }));
           break;
         case "mousemove":
@@ -105,7 +108,9 @@ function App() {
         (edge) =>
           edge.fromIndex !== selectedNode && edge.toIndex !== selectedNode
       ),
-      nodes: prev.nodes.filter((node, index) => index !== selectedNode),
+      nodes: prev.nodes.map((node, index) =>
+        index === selectedNode ? { ...node, deleted: true } : node
+      ),
     }));
     setSelectedNode(null);
   }, [selectedNode]);

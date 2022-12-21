@@ -25,6 +25,7 @@ interface Node {
   xPos: number;
   yPos: number;
   radius: number;
+  deleted: boolean;
 }
 
 interface Edge {
@@ -135,18 +136,21 @@ function Workboard({
               strokeWidth={edgeStrokeWidth}
             />
           ))}
-          {nodes.map((node, index) => (
-            <circle
-              key={index}
-              cx={node.xPos}
-              cy={node.yPos}
-              r={node.radius}
-              stroke={index === selectedNode ? "green" : nodeStroke}
-              strokeWidth={nodeStrokeWidth}
-              fill={nodeFill}
-              onDrag={(e) => console.log(e)}
-            />
-          ))}
+          {nodes.map(
+            (node, index) =>
+              !node.deleted && (
+                <circle
+                  key={index}
+                  cx={node.xPos}
+                  cy={node.yPos}
+                  r={node.radius}
+                  stroke={index === selectedNode ? "green" : nodeStroke}
+                  strokeWidth={nodeStrokeWidth}
+                  fill={nodeFill}
+                  onDrag={(e) => console.log(e)}
+                />
+              )
+          )}
         </svg>
       </Board>
     </Wrapper>
