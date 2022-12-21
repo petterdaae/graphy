@@ -22,6 +22,7 @@ const Board = styled.div`
 interface Props {
   onClick: (x: number, y: number) => void;
   nodes: number[][];
+  edges: number[][];
   nodeRadius: number;
   nodeFill: string;
   nodeStroke: string;
@@ -39,6 +40,7 @@ function Workboard({
   nodeStrokeWidth,
   boardWidth,
   boardHeight,
+  edges,
 }: Props) {
   const wrapperRef = createRef<HTMLDivElement>();
   const boardRef = createRef<HTMLDivElement>();
@@ -60,6 +62,17 @@ function Workboard({
     <Wrapper ref={wrapperRef}>
       <Board ref={boardRef} onClick={onBoardClick}>
         <svg height={boardHeight} width={boardWidth}>
+          {edges.map(([from, to, key]) => (
+            <line
+              key={key}
+              x1={nodes[from][0]}
+              y1={nodes[from][1]}
+              x2={nodes[to][0]}
+              y2={nodes[to][1]}
+              stroke="red"
+              strokeWidth={3}
+            />
+          ))}
           {nodes.map((node) => (
             <circle
               key={node[2]}

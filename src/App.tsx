@@ -1,15 +1,24 @@
 import { useState } from "react";
 import Workboard from "./components/Workboard";
 
-const NODE_RADIUS = 20;
+const NODE_RADIUS = 10;
 const NODE_FILL = "lightblue";
-const NODE_STROKE = "lightgray";
-const NODE_STROKE_WIDTH = 2;
+const NODE_STROKE = "blue";
+const NODE_STROKE_WIDTH = 3;
 const BOARD_WIDTH = 3000;
 const BOARD_HEIGHT = 3000;
 
 function App() {
-  const [nodes, setNodes] = useState([[50, 50, 0]]);
+  const [nodes, setNodes] = useState<number[][]>([
+    [100, 100, 0],
+    [200, 200, 1],
+    [100, 200, 2],
+    [200, 100, 3],
+  ]);
+  const [edges, setEdges] = useState<number[][]>([
+    [0, 1, 1],
+    [2, 3, 2],
+  ]);
   return (
     <div>
       <Workboard
@@ -23,6 +32,7 @@ function App() {
         nodeStrokeWidth={NODE_STROKE_WIDTH}
         boardWidth={BOARD_WIDTH}
         boardHeight={BOARD_HEIGHT}
+        edges={edges}
       />
     </div>
   );
