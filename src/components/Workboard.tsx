@@ -78,14 +78,6 @@ function Workboard({
     [wrapperRef, boardRef]
   );
 
-  // const onBoardClick = useCallback(
-  //   (e: React.MouseEvent<HTMLDivElement>) => {
-  //     const [x, y] = getCoordinates(e.pageX, e.pageY);
-  //     onClick(x, y);
-  //   },
-  //   [onClick, getCoordinates]
-  // );
-
   const [mouseDown, setMouseDown] = useState(false);
 
   useEffect(() => {

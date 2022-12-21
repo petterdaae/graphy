@@ -54,10 +54,8 @@ function App() {
             if (prevSelectedNode !== null) {
               if (prevSelectedNode === nodeClick) {
                 setSelectedNode(null);
-                console.log("unselect click:", nodeClick);
                 return;
               }
-              console.log("new edge click:", nodeClick);
               setGraph((prev) => ({
                 ...prev,
                 edges: [
@@ -70,7 +68,6 @@ function App() {
               }));
               return;
             }
-            console.log("select click");
             setSelectedNode(nodeClick);
             return;
           }
@@ -85,7 +82,6 @@ function App() {
         case "mousemove":
           if (selectedNode !== null) {
             setIsMoving(true);
-            // TODO: better "react-way" to do this?
             const copy = graph.nodes.slice();
             copy[selectedNode] = { ...copy[selectedNode], xPos: x, yPos: y };
             setGraph((prev) => ({ ...prev, nodes: copy }));
@@ -125,7 +121,9 @@ function App() {
             const allEdges = [];
             for (let i = 0; i < prev.nodes.length; i++) {
               for (let j = i + 1; j < prev.nodes.length; j++) {
-                allEdges.push({ fromIndex: i, toIndex: j });
+                if (!graph.nodes[i].deleted && !graph.nodes[j].deleted) {
+                  allEdges.push({ fromIndex: i, toIndex: j });
+                }
               }
             }
             return { ...prev, edges: allEdges };

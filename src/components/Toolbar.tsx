@@ -1,9 +1,15 @@
 import styled from "@emotion/styled";
 
 const StyledDiv = styled.div`
-  height: 5vh;
+  height: calc(5vh - 2px);
   width: 100vw;
-  background: lightblue;
+  background: lightgray;
+  border-bottom: 2px solid gray;
+  display: flex;
+`;
+
+const StyledButton = styled.button`
+  margin: 4px;
 `;
 
 interface Props {
@@ -19,10 +25,12 @@ function Toolbar({
 }: Props) {
   return (
     <StyledDiv>
-      <button disabled={!deleteEnabled} onClick={onDeleteClick}>
+      <StyledButton disabled={!deleteEnabled} onClick={onDeleteClick}>
         Delete
-      </button>
-      <button onClick={onConnectAllVerticesClick}>Connect all vertices</button>
+      </StyledButton>
+      <StyledButton onClick={onConnectAllVerticesClick}>
+        Connect all vertices
+      </StyledButton>
     </StyledDiv>
   );
 }
