@@ -19,6 +19,8 @@ const Board = styled.div`
     linear-gradient(to bottom, lightgrey 1px, transparent 1px);
 `;
 
+type EventType = "mousedown" | "mouseup" | "mousemove";
+
 interface Node {
   xPos: number;
   yPos: number;
@@ -31,7 +33,7 @@ interface Edge {
 }
 
 interface Props {
-  onClick: (x: number, y: number) => void;
+  eventListener: (eventType: EventType, x: number, y: number) => void;
   nodes: Node[];
   edges: Edge[];
   nodeFill: string;
@@ -45,7 +47,6 @@ interface Props {
 }
 
 function Workboard({
-  onClick,
   nodes,
   nodeFill,
   nodeStroke,
@@ -56,6 +57,7 @@ function Workboard({
   edgeStroke,
   edgeStrokeWidth,
   selectedNode,
+  eventListener,
 }: Props) {
   const wrapperRef = createRef<HTMLDivElement>();
   const boardRef = createRef<HTMLDivElement>();
@@ -75,33 +77,35 @@ function Workboard({
     [wrapperRef, boardRef]
   );
 
-  const onBoardClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      const [x, y] = getCoordinates(e.pageX, e.pageY);
-      onClick(x, y);
-    },
-    [onClick, getCoordinates]
-  );
+  // const onBoardClick = useCallback(
+  //   (e: React.MouseEvent<HTMLDivElement>) => {
+  //     const [x, y] = getCoordinates(e.pageX, e.pageY);
+  //     onClick(x, y);
+  //   },
+  //   [onClick, getCoordinates]
+  // );
 
   const [mouseDown, setMouseDown] = useState(false);
 
   useEffect(() => {
     const current = boardRef.current;
 
-    function down() {
+    function down(e: MouseEvent) {
+      const [x, y] = getCoordinates(e.pageX, e.pageY);
+      eventListener("mousedown", x, y);
       setMouseDown(true);
-      console.log("down");
     }
 
-    function up() {
+    function up(e: MouseEvent) {
+      const [x, y] = getCoordinates(e.pageX, e.pageY);
+      eventListener("mouseup", x, y);
       setMouseDown(false);
-      console.log("up");
     }
 
     function move(e: MouseEvent) {
       if (mouseDown) {
         const [x, y] = getCoordinates(e.pageX, e.pageY);
-        console.log("move", x, y);
+        eventListener("mousemove", x, y);
       }
     }
 
@@ -114,11 +118,11 @@ function Workboard({
       current?.removeEventListener("mouseup", up);
       current?.removeEventListener("mousemove", move);
     };
-  }, [boardRef, setMouseDown, mouseDown]);
+  }, [boardRef, setMouseDown, mouseDown, getCoordinates, eventListener]);
 
   return (
     <Wrapper ref={wrapperRef}>
-      <Board ref={boardRef} onClick={onBoardClick}>
+      <Board ref={boardRef}>
         <svg height={boardHeight} width={boardWidth}>
           {edges.map((edge, index) => (
             <line
@@ -150,4 +154,4 @@ function Workboard({
 }
 
 export { Workboard };
-export type { Node, Edge };
+export type { Node, Edge, EventType };

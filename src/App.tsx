@@ -1,7 +1,6 @@
-import { setegid } from "process";
 import { useCallback, useState } from "react";
 import Toolbar from "./components/Toolbar";
-import { Workboard, Node, Edge } from "./components/Workboard";
+import { Workboard, Node, Edge, EventType } from "./components/Workboard";
 
 const NODE_RADIUS = 20;
 const NODE_FILL = "lightblue";
@@ -43,36 +42,91 @@ function App() {
 
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
 
-  const onBoardClick = useCallback(
-    (x: number, y: number) => {
-      const prevSelectedNode = selectedNode;
-      setSelectedNode(null);
-      let nodeClick = isNodeClick(x, y, nodes);
-      if (nodeClick !== null) {
-        if (prevSelectedNode !== null) {
-          console.log("new edge click:", nodeClick);
-          setEdges((prev) => [
+  // const onBoardClick = useCallback(
+  //   (x: number, y: number) => {
+  //     const prevSelectedNode = selectedNode;
+  //     setSelectedNode(null);
+  //     let nodeClick = isNodeClick(x, y, nodes);
+  //     if (nodeClick !== null) {
+  //       if (prevSelectedNode !== null) {
+  //         console.log("new edge click:", nodeClick);
+  //         setEdges((prev) => [
+  //           ...prev,
+  //           {
+  //             fromIndex: prevSelectedNode as number,
+  //             toIndex: nodeClick as number,
+  //           },
+  //         ]);
+  //         return;
+  //       }
+  //       console.log("node click:", nodeClick);
+  //       setSelectedNode(nodeClick);
+  //       return;
+  //     }
+  //     setNodes((prev) => [...prev, { xPos: x, yPos: y, radius: NODE_RADIUS }]);
+  //   },
+  //   [nodes, selectedNode, setEdges, setNodes, setSelectedNode]
+  // );
+
+  const [isMoving, setIsMoving] = useState(false);
+
+  const eventListener = useCallback(
+    (e: EventType, x: number, y: number) => {
+      switch (e) {
+        case "mousedown":
+          const prevSelectedNode = selectedNode;
+          setSelectedNode(null);
+          const nodeClick = isNodeClick(x, y, nodes);
+          if (nodeClick !== null) {
+            if (prevSelectedNode !== null) {
+              if (prevSelectedNode === nodeClick) {
+                setSelectedNode(null);
+                console.log("unselect click:", nodeClick);
+                return;
+              }
+              console.log("new edge click:", nodeClick);
+              setEdges((prev) => [
+                ...prev,
+                {
+                  fromIndex: prevSelectedNode as number,
+                  toIndex: nodeClick as number,
+                },
+              ]);
+              return;
+            }
+            console.log("select click");
+            setSelectedNode(nodeClick);
+            return;
+          }
+          setNodes((prev) => [
             ...prev,
-            {
-              fromIndex: prevSelectedNode as number,
-              toIndex: nodeClick as number,
-            },
+            { xPos: x, yPos: y, radius: NODE_RADIUS },
           ]);
-          return;
-        }
-        console.log("node click:", nodeClick);
-        setSelectedNode(nodeClick);
-        return;
+          break;
+        case "mousemove":
+          if (selectedNode !== null) {
+            setIsMoving(true);
+            // TODO: better "react-way" to do this?
+            const copy = nodes.slice();
+            copy[selectedNode] = { ...copy[selectedNode], xPos: x, yPos: y };
+            setNodes(copy);
+          }
+          break;
+        case "mouseup":
+          if (isMoving) {
+            setIsMoving(false);
+            setSelectedNode(null);
+          }
+          break;
       }
-      setNodes((prev) => [...prev, { xPos: x, yPos: y, radius: NODE_RADIUS }]);
     },
-    [nodes, selectedNode, setEdges, setNodes, setSelectedNode]
+    [nodes, selectedNode]
   );
+
   return (
     <div>
       <Toolbar />
       <Workboard
-        onClick={onBoardClick}
         nodes={nodes}
         nodeFill={NODE_FILL}
         nodeStroke={NODE_STROKE}
@@ -83,6 +137,7 @@ function App() {
         edgeStroke={EDGE_STROKE}
         edgeStrokeWidth={EDGE_STROKE_WIDTH}
         selectedNode={selectedNode}
+        eventListener={eventListener}
       />
     </div>
   );
