@@ -1,3 +1,4 @@
+import { setegid } from "process";
 import { useCallback, useState } from "react";
 import Toolbar from "./components/Toolbar";
 import { Workboard, Node, Edge } from "./components/Workboard";
@@ -36,32 +37,36 @@ function isNodeClick(
 }
 
 function App() {
-  const [nodes, setNodes] = useState<Node[]>([
-    { xPos: 100, yPos: 100, radius: NODE_RADIUS },
-    { xPos: 200, yPos: 100, radius: NODE_RADIUS },
-    { xPos: 100, yPos: 200, radius: NODE_RADIUS },
-    { xPos: 200, yPos: 200, radius: NODE_RADIUS },
-  ]);
+  const [nodes, setNodes] = useState<Node[]>([]);
 
-  const [edges, setEdges] = useState<Edge[]>([
-    { fromIndex: 0, toIndex: 1 },
-    { fromIndex: 2, toIndex: 3 },
-  ]);
+  const [edges, setEdges] = useState<Edge[]>([]);
 
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
 
   const onBoardClick = useCallback(
     (x: number, y: number) => {
+      const prevSelectedNode = selectedNode;
       setSelectedNode(null);
       let nodeClick = isNodeClick(x, y, nodes);
       if (nodeClick !== null) {
+        if (prevSelectedNode !== null) {
+          console.log("new edge click:", nodeClick);
+          setEdges((prev) => [
+            ...prev,
+            {
+              fromIndex: prevSelectedNode as number,
+              toIndex: nodeClick as number,
+            },
+          ]);
+          return;
+        }
         console.log("node click:", nodeClick);
         setSelectedNode(nodeClick);
         return;
       }
       setNodes((prev) => [...prev, { xPos: x, yPos: y, radius: NODE_RADIUS }]);
     },
-    [nodes, setNodes]
+    [nodes, selectedNode, setEdges, setNodes, setSelectedNode]
   );
   return (
     <div>
