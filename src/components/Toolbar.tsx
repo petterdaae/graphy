@@ -6,10 +6,12 @@ const StyledDiv = styled.div`
   background: lightgray;
   border-bottom: 2px solid gray;
   display: flex;
+  overflow-x: scroll;
 `;
 
 const StyledButton = styled.button`
   margin: 4px;
+  white-space: nowrap;
 `;
 
 interface Props {

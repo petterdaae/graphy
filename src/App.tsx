@@ -2,14 +2,14 @@ import { useCallback, useState } from "react";
 import Toolbar from "./components/Toolbar";
 import { Workboard, Node, Edge, EventType } from "./components/Workboard";
 
-const NODE_RADIUS = 10;
-const NODE_FILL = "lightblue";
-const NODE_STROKE = "blue";
+const NODE_RADIUS = 15;
+const NODE_FILL = "lightgray";
+const NODE_STROKE = "gray";
 const NODE_STROKE_WIDTH = 3;
 const BOARD_WIDTH = 3000;
 const BOARD_HEIGHT = 3000;
-const EDGE_STROKE = "red";
-const EDGE_STROKE_WIDTH = 1;
+const EDGE_STROKE = "green";
+const EDGE_STROKE_WIDTH = 2;
 
 function clickIsInsideNode(
   clickX: number,
