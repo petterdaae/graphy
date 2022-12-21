@@ -59,19 +59,28 @@ function Workboard({
 }: Props) {
   const wrapperRef = createRef<HTMLDivElement>();
   const boardRef = createRef<HTMLDivElement>();
-  const onBoardClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
+
+  const getCoordinates = useCallback(
+    (pageX: number, pageY: number): number[] => {
       const x =
-        e.pageX +
+        pageX +
         (wrapperRef.current?.scrollLeft ?? 0) -
         (boardRef.current?.offsetLeft ?? 0);
       const y =
-        e.pageY +
+        pageY +
         (wrapperRef.current?.scrollTop ?? 0) -
         (boardRef.current?.offsetTop ?? 0);
+      return [x, y];
+    },
+    [wrapperRef, boardRef]
+  );
+
+  const onBoardClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const [x, y] = getCoordinates(e.pageX, e.pageY);
       onClick(x, y);
     },
-    [onClick, wrapperRef, boardRef]
+    [onClick, getCoordinates]
   );
 
   const [mouseDown, setMouseDown] = useState(false);
@@ -89,9 +98,10 @@ function Workboard({
       console.log("up");
     }
 
-    function move() {
+    function move(e: MouseEvent) {
       if (mouseDown) {
-        console.log("move", mouseDown);
+        const [x, y] = getCoordinates(e.pageX, e.pageY);
+        console.log("move", x, y);
       }
     }
 
