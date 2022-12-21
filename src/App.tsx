@@ -48,11 +48,15 @@ function App() {
     { fromIndex: 2, toIndex: 3 },
   ]);
 
+  const [selectedNode, setSelectedNode] = useState<number | null>(null);
+
   const onBoardClick = useCallback(
     (x: number, y: number) => {
+      setSelectedNode(null);
       let nodeClick = isNodeClick(x, y, nodes);
       if (nodeClick !== null) {
         console.log("node click:", nodeClick);
+        setSelectedNode(nodeClick);
         return;
       }
       setNodes((prev) => [...prev, { xPos: x, yPos: y, radius: NODE_RADIUS }]);
@@ -73,6 +77,7 @@ function App() {
         edges={edges}
         edgeStroke={EDGE_STROKE}
         edgeStrokeWidth={EDGE_STROKE_WIDTH}
+        selectedNode={selectedNode}
       />
     </div>
   );

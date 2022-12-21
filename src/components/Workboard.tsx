@@ -41,6 +41,7 @@ interface Props {
   boardHeight: number;
   edgeStroke: string;
   edgeStrokeWidth: number;
+  selectedNode: number | null;
 }
 
 function Workboard({
@@ -54,6 +55,7 @@ function Workboard({
   edges,
   edgeStroke,
   edgeStrokeWidth,
+  selectedNode,
 }: Props) {
   const wrapperRef = createRef<HTMLDivElement>();
   const boardRef = createRef<HTMLDivElement>();
@@ -92,7 +94,7 @@ function Workboard({
               cx={node.xPos}
               cy={node.yPos}
               r={node.radius}
-              stroke={nodeStroke}
+              stroke={index === selectedNode ? "green" : nodeStroke}
               strokeWidth={nodeStrokeWidth}
               fill={nodeFill}
             />
