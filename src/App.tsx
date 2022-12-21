@@ -2,14 +2,14 @@ import { useCallback, useState } from "react";
 import Toolbar from "./components/Toolbar";
 import { Workboard, Node, Edge, EventType } from "./components/Workboard";
 
-const NODE_RADIUS = 20;
+const NODE_RADIUS = 10;
 const NODE_FILL = "lightblue";
 const NODE_STROKE = "blue";
 const NODE_STROKE_WIDTH = 3;
 const BOARD_WIDTH = 3000;
 const BOARD_HEIGHT = 3000;
 const EDGE_STROKE = "red";
-const EDGE_STROKE_WIDTH = 3;
+const EDGE_STROKE_WIDTH = 1;
 
 function clickIsInsideNode(
   clickX: number,
@@ -115,7 +115,17 @@ function App() {
       <Toolbar
         deleteEnabled={selectedNode !== null && !isMoving}
         onDeleteClick={onDelete}
-        onConnectAllVerticesClick={() => {}}
+        onConnectAllVerticesClick={() => {
+          setGraph((prev) => {
+            const allEdges = [];
+            for (let i = 0; i < prev.nodes.length; i++) {
+              for (let j = i + 1; j < prev.nodes.length; j++) {
+                allEdges.push({ fromIndex: i, toIndex: j });
+              }
+            }
+            return { ...prev, edges: allEdges };
+          });
+        }}
       />
       <Workboard
         nodes={graph.nodes}
