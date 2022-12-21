@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React from "react";
+import React, { createRef, useCallback } from "react";
 
 const Wrapper = styled.div`
   margin: 20px;
@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   border: 10px solid lightgray;
 `;
 
-const StyledWorkboard = styled.div`
+const Board = styled.div`
   position: relative;
   height: 3000px;
   width: 3000px;
@@ -22,28 +22,53 @@ const StyledWorkboard = styled.div`
 `;
 
 interface Props {
-  onClick: (e: React.MouseEvent<HTMLElement>) => void;
+  onClick: (x: number, y: number) => void;
   nodes: number[][];
+  nodeRadius: number;
 }
 
-function Workboard(props: Props) {
+function Workboard({ onClick, nodeRadius, nodes }: Props) {
+  const wrapperRef = createRef<HTMLDivElement>();
+  const boardRef = createRef<HTMLDivElement>();
+  const onBoardClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const x =
+        e.pageX +
+        (wrapperRef.current?.scrollLeft ?? 0) -
+        (boardRef.current?.offsetLeft ?? 0);
+      const y =
+        e.pageY +
+        (wrapperRef.current?.scrollTop ?? 0) -
+        (boardRef.current?.offsetTop ?? 0);
+      onClick(x, y);
+    },
+    [onClick, wrapperRef, boardRef]
+  );
   return (
-    <Wrapper>
-      <StyledWorkboard onClick={props.onClick}>
+    <Wrapper ref={wrapperRef}>
+      <Board ref={boardRef} onClick={onBoardClick}>
         <svg height="3000" width="3000">
-          {props.nodes.map((node) => (
+          <circle
+            cx={0}
+            cy={0}
+            r={20}
+            stroke="blue"
+            strokeWidth="3"
+            fill="red"
+          />
+          {nodes.map((node) => (
             <circle
               key={node[2]}
               cx={node[0]}
               cy={node[1]}
-              r="40"
+              r={nodeRadius}
               stroke="black"
               strokeWidth="3"
               fill="red"
             />
           ))}
         </svg>
-      </StyledWorkboard>
+      </Board>
     </Wrapper>
   );
 }
