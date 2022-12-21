@@ -7,6 +7,8 @@ const NODE_STROKE = "blue";
 const NODE_STROKE_WIDTH = 3;
 const BOARD_WIDTH = 3000;
 const BOARD_HEIGHT = 3000;
+const EDGE_STROKE = "red";
+const EDGE_STROKE_WIDTH = 3;
 
 function App() {
   const [nodes, setNodes] = useState<Node[]>([
@@ -33,6 +35,8 @@ function App() {
         boardWidth={BOARD_WIDTH}
         boardHeight={BOARD_HEIGHT}
         edges={edges}
+        edgeStroke={EDGE_STROKE}
+        edgeStrokeWidth={EDGE_STROKE_WIDTH}
       />
     </div>
   );

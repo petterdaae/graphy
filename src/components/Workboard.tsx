@@ -39,6 +39,8 @@ interface Props {
   nodeStrokeWidth: number;
   boardWidth: number;
   boardHeight: number;
+  edgeStroke: string;
+  edgeStrokeWidth: number;
 }
 
 function Workboard({
@@ -51,6 +53,8 @@ function Workboard({
   boardWidth,
   boardHeight,
   edges,
+  edgeStroke,
+  edgeStrokeWidth,
 }: Props) {
   const wrapperRef = createRef<HTMLDivElement>();
   const boardRef = createRef<HTMLDivElement>();
@@ -79,8 +83,8 @@ function Workboard({
               y1={nodes[edge.fromIndex].yPos}
               x2={nodes[edge.toIndex].xPos}
               y2={nodes[edge.toIndex].yPos}
-              stroke="red"
-              strokeWidth={3}
+              stroke={edgeStroke}
+              strokeWidth={edgeStrokeWidth}
             />
           ))}
           {nodes.map((node, index) => (
