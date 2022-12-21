@@ -2,13 +2,11 @@ import styled from "@emotion/styled";
 import React, { createRef, useCallback } from "react";
 
 const Wrapper = styled.div`
-  margin: 20px;
-  width: 1000px;
-  height: 700px;
+  width: 90vw;
+  height: 90vh;
+
   overflow-x: scroll;
   overflow-y: scroll;
-
-  border: 10px solid lightgray;
 `;
 
 const Board = styled.div`
@@ -25,9 +23,23 @@ interface Props {
   onClick: (x: number, y: number) => void;
   nodes: number[][];
   nodeRadius: number;
+  nodeFill: string;
+  nodeStroke: string;
+  nodeStrokeWidth: number;
+  boardWidth: number;
+  boardHeight: number;
 }
 
-function Workboard({ onClick, nodeRadius, nodes }: Props) {
+function Workboard({
+  onClick,
+  nodeRadius,
+  nodes,
+  nodeFill,
+  nodeStroke,
+  nodeStrokeWidth,
+  boardWidth,
+  boardHeight,
+}: Props) {
   const wrapperRef = createRef<HTMLDivElement>();
   const boardRef = createRef<HTMLDivElement>();
   const onBoardClick = useCallback(
@@ -47,24 +59,16 @@ function Workboard({ onClick, nodeRadius, nodes }: Props) {
   return (
     <Wrapper ref={wrapperRef}>
       <Board ref={boardRef} onClick={onBoardClick}>
-        <svg height="3000" width="3000">
-          <circle
-            cx={0}
-            cy={0}
-            r={20}
-            stroke="blue"
-            strokeWidth="3"
-            fill="red"
-          />
+        <svg height={boardHeight} width={boardWidth}>
           {nodes.map((node) => (
             <circle
               key={node[2]}
               cx={node[0]}
               cy={node[1]}
               r={nodeRadius}
-              stroke="black"
-              strokeWidth="3"
-              fill="red"
+              stroke={nodeStroke}
+              strokeWidth={nodeStrokeWidth}
+              fill={nodeFill}
             />
           ))}
         </svg>
