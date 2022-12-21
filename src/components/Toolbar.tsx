@@ -6,13 +6,23 @@ const StyledDiv = styled.div`
   background: lightblue;
 `;
 
-function Toolbar() {
+interface Props {
+  onDeleteClick: () => void;
+  deleteEnabled: boolean;
+  onConnectAllVerticesClick: () => void;
+}
+
+function Toolbar({
+  onDeleteClick,
+  deleteEnabled,
+  onConnectAllVerticesClick,
+}: Props) {
   return (
     <StyledDiv>
-      <select>
-        <option>Normal mode (n)</option>
-      </select>
-      <button disabled>Delete</button>
+      <button disabled={!deleteEnabled} onClick={onDeleteClick}>
+        Delete
+      </button>
+      <button onClick={onConnectAllVerticesClick}>Connect all vertices</button>
     </StyledDiv>
   );
 }

@@ -36,38 +36,11 @@ function isNodeClick(
 }
 
 function App() {
-  const [nodes, setNodes] = useState<Node[]>([]);
-
-  const [edges, setEdges] = useState<Edge[]>([]);
-
+  const [graph, setGraph] = useState<{ nodes: Node[]; edges: Edge[] }>({
+    nodes: [],
+    edges: [],
+  });
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
-
-  // const onBoardClick = useCallback(
-  //   (x: number, y: number) => {
-  //     const prevSelectedNode = selectedNode;
-  //     setSelectedNode(null);
-  //     let nodeClick = isNodeClick(x, y, nodes);
-  //     if (nodeClick !== null) {
-  //       if (prevSelectedNode !== null) {
-  //         console.log("new edge click:", nodeClick);
-  //         setEdges((prev) => [
-  //           ...prev,
-  //           {
-  //             fromIndex: prevSelectedNode as number,
-  //             toIndex: nodeClick as number,
-  //           },
-  //         ]);
-  //         return;
-  //       }
-  //       console.log("node click:", nodeClick);
-  //       setSelectedNode(nodeClick);
-  //       return;
-  //     }
-  //     setNodes((prev) => [...prev, { xPos: x, yPos: y, radius: NODE_RADIUS }]);
-  //   },
-  //   [nodes, selectedNode, setEdges, setNodes, setSelectedNode]
-  // );
-
   const [isMoving, setIsMoving] = useState(false);
 
   const eventListener = useCallback(
@@ -76,7 +49,7 @@ function App() {
         case "mousedown":
           const prevSelectedNode = selectedNode;
           setSelectedNode(null);
-          const nodeClick = isNodeClick(x, y, nodes);
+          const nodeClick = isNodeClick(x, y, graph.nodes);
           if (nodeClick !== null) {
             if (prevSelectedNode !== null) {
               if (prevSelectedNode === nodeClick) {
@@ -85,31 +58,34 @@ function App() {
                 return;
               }
               console.log("new edge click:", nodeClick);
-              setEdges((prev) => [
+              setGraph((prev) => ({
                 ...prev,
-                {
-                  fromIndex: prevSelectedNode as number,
-                  toIndex: nodeClick as number,
-                },
-              ]);
+                edges: [
+                  ...prev.edges,
+                  {
+                    fromIndex: prevSelectedNode as number,
+                    toIndex: nodeClick as number,
+                  },
+                ],
+              }));
               return;
             }
             console.log("select click");
             setSelectedNode(nodeClick);
             return;
           }
-          setNodes((prev) => [
+          setGraph((prev) => ({
             ...prev,
-            { xPos: x, yPos: y, radius: NODE_RADIUS },
-          ]);
+            nodes: [...prev.nodes, { xPos: x, yPos: y, radius: NODE_RADIUS }],
+          }));
           break;
         case "mousemove":
           if (selectedNode !== null) {
             setIsMoving(true);
             // TODO: better "react-way" to do this?
-            const copy = nodes.slice();
+            const copy = graph.nodes.slice();
             copy[selectedNode] = { ...copy[selectedNode], xPos: x, yPos: y };
-            setNodes(copy);
+            setGraph((prev) => ({ ...prev, nodes: copy }));
           }
           break;
         case "mouseup":
@@ -120,20 +96,35 @@ function App() {
           break;
       }
     },
-    [nodes, selectedNode]
+    [isMoving, graph, selectedNode]
   );
+
+  const onDelete = useCallback(() => {
+    setGraph((prev) => ({
+      edges: prev.edges.filter(
+        (edge) =>
+          edge.fromIndex !== selectedNode && edge.toIndex !== selectedNode
+      ),
+      nodes: prev.nodes.filter((node, index) => index !== selectedNode),
+    }));
+    setSelectedNode(null);
+  }, [selectedNode]);
 
   return (
     <div>
-      <Toolbar />
+      <Toolbar
+        deleteEnabled={selectedNode !== null && !isMoving}
+        onDeleteClick={onDelete}
+        onConnectAllVerticesClick={() => {}}
+      />
       <Workboard
-        nodes={nodes}
+        nodes={graph.nodes}
         nodeFill={NODE_FILL}
         nodeStroke={NODE_STROKE}
         nodeStrokeWidth={NODE_STROKE_WIDTH}
         boardWidth={BOARD_WIDTH}
         boardHeight={BOARD_HEIGHT}
-        edges={edges}
+        edges={graph.edges}
         edgeStroke={EDGE_STROKE}
         edgeStrokeWidth={EDGE_STROKE_WIDTH}
         selectedNode={selectedNode}
