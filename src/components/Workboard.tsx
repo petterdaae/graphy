@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React, { createRef, useCallback } from "react";
+import React, { createRef, useCallback, useEffect, useState } from "react";
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -73,6 +73,39 @@ function Workboard({
     },
     [onClick, wrapperRef, boardRef]
   );
+
+  const [mouseDown, setMouseDown] = useState(false);
+
+  useEffect(() => {
+    const current = boardRef.current;
+
+    function down() {
+      setMouseDown(true);
+      console.log("down");
+    }
+
+    function up() {
+      setMouseDown(false);
+      console.log("up");
+    }
+
+    function move() {
+      if (mouseDown) {
+        console.log("move", mouseDown);
+      }
+    }
+
+    current?.addEventListener("mousedown", down);
+    current?.addEventListener("mouseup", up);
+    current?.addEventListener("mousemove", move);
+
+    return () => {
+      current?.removeEventListener("mousedown", down);
+      current?.removeEventListener("mouseup", up);
+      current?.removeEventListener("mousemove", move);
+    };
+  }, [boardRef, setMouseDown, mouseDown]);
+
   return (
     <Wrapper ref={wrapperRef}>
       <Board ref={boardRef} onClick={onBoardClick}>
@@ -97,6 +130,7 @@ function Workboard({
               stroke={index === selectedNode ? "green" : nodeStroke}
               strokeWidth={nodeStrokeWidth}
               fill={nodeFill}
+              onDrag={(e) => console.log(e)}
             />
           ))}
         </svg>
