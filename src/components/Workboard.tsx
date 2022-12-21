@@ -2,8 +2,8 @@ import styled from "@emotion/styled";
 import React, { createRef, useCallback } from "react";
 
 const Wrapper = styled.div`
-  width: 90vw;
-  height: 90vh;
+  width: 100vw;
+  height: 95vh;
 
   overflow-x: scroll;
   overflow-y: scroll;

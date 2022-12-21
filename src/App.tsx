@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import Toolbar from "./components/Toolbar";
 import { Workboard, Node, Edge } from "./components/Workboard";
 
 const NODE_RADIUS = 20;
@@ -60,6 +61,7 @@ function App() {
   );
   return (
     <div>
+      <Toolbar />
       <Workboard
         onClick={onBoardClick}
         nodes={nodes}
